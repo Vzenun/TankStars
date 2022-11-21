@@ -1,4 +1,4 @@
 package com.tankstars.game.screen;
 
-public class SavedScreen {
+public class SavedScreen implements Screen{
 }

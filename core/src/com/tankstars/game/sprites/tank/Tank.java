@@ -1,9 +1,11 @@
 package com.tankstars.game.sprites.tank;
 
+import com.badlogic.gdx.graphics.Texture;
+
 public class Tank {
-    /*
+
     private double health;
-   // private Texture tank;
+    private Texture tank;
 
     public void setHealth(double health) {
         this.health = health;
@@ -34,5 +36,5 @@ public class Tank {
     }
     public void decompose(){
         tank.dispose();
-    }*/
+    }
 }
