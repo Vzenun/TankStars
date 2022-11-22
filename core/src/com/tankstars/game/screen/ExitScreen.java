@@ -12,15 +12,17 @@ import com.tankstars.game.TankStars;
 
 import org.w3c.dom.css.Rect;
 
-public class PlayScreen implements Screen {
+public class ExitScreen implements Screen {
     private TankStars game;
-    private Texture showmain,playbutton;
-    private Circle capture;
-    public PlayScreen(TankStars game)
+    private Texture jumptomain,backscreen;
+    private Rectangle yes,no;
+    public ExitScreen(TankStars game)
     {
         this.game=game;
-        showmain=new Texture("playsc.png");
-        capture=new Circle(35,720-659,65);
+        jumptomain=new Texture("exitornot.png");
+        backscreen=new Texture("PauseSc.png");
+        yes=new Rectangle(540,720-402,100,100);
+        no=new Rectangle(540,720-262,100,100);
     }
     @Override
     public void show() {
@@ -32,8 +34,13 @@ public class PlayScreen implements Screen {
             postotouch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 //            cam.unproject(postotouch);
 
-            if (capture.contains(postotouch.x, postotouch.y)) {
-                game.setScreen(new PauseScreen(game));
+            if ((yes.contains(postotouch.x, postotouch.y))) {
+                game.setScreen(new MenuScreen(game));
+                dispose();
+            }
+            else
+            if(no.contains(postotouch.x, postotouch.y)){
+                game.setScreen(new MenuScreen(game));
                 dispose();
             }
         }
@@ -44,7 +51,8 @@ public class PlayScreen implements Screen {
         ScreenUtils.clear(1, 0, 0, 1);
 //        cam.update();
         game.batch.begin();
-        game.batch.draw(showmain,0,0);
+        game.batch.draw(backscreen,0,0);
+        game.batch.draw(jumptomain,320,100);
         game.batch.end();
         handleInput();
     }

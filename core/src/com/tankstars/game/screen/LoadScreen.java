@@ -7,31 +7,35 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.tankstars.game.TankStars;
 
-//public class LoadScreen implements Screen {
-    /*private TankStars game;
+public class LoadScreen implements Screen {
+    private TankStars game;
     private Texture loadingscreen;
+
     //private Texture menuscreen,newgamebtn,resumegamebtn,supportgamebtn,exitgamebtn;
     public LoadScreen(TankStars game) {
         this.game = game;
-        this.loadingscreen = new Texture("LoadGame.jpg");
+        this.loadingscreen = new Texture("loadgame.png");
     }
-    public MenuScreen(GameScreenManager game){
-        super(game);
 
     @Override
     public void show() {
+    }
 
+    private void handleInput() {
+        if (Gdx.input.justTouched()) {
+            game.setScreen(new MenuScreen(game));
+        }
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        ScreenUtils.clear(1, 0, 0, 1);
+        ScreenUtils.clear(0, 0, 0, 0);
         game.batch.begin();
-        game.batch.draw(img,0,0);
-        game.batch.draw(bad, 0, -90);
+        game.batch.draw(loadingscreen, TankStars.WIDTH/2-loadingscreen.getWidth()/2, 0);
 //		img.dispose();
         game.batch.end();
+        handleInput();
     }
 
     @Override
@@ -57,6 +61,7 @@ import com.tankstars.game.TankStars;
     @Override
     public void dispose() {
 
-    }*/
+    }
+}
 
 
