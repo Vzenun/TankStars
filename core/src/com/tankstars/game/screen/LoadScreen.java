@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.tankstars.game.TankStars;
 
-public class LoadScreen implements Screen {
+import java.io.Serializable;
+
+public class LoadScreen implements Screen, Serializable {
     private TankStars game;
     private Texture loadingscreen;
 

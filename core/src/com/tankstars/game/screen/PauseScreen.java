@@ -9,9 +9,10 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.tankstars.game.TankStars;
 
 import java.awt.Rectangle;
+import java.io.Serializable;
 import java.util.concurrent.RecursiveAction;
 
-public class PauseScreen implements Screen {
+public class PauseScreen implements Screen, Serializable {
 
     private TankStars game;
     private Texture pssc;

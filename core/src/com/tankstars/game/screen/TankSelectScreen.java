@@ -12,10 +12,11 @@ import com.sun.imageio.plugins.gif.GIFImageReader;
 import com.tankstars.game.TankStars;
 
 import java.awt.Rectangle;
+import java.io.Serializable;
 
 import sun.awt.image.GifImageDecoder;
 
-public class TankSelectScreen implements Screen {
+public class TankSelectScreen implements Screen, Serializable {
     private TankStars game;
     Animation<TextureRegion> animation;
     private Texture screen2,blackscreen,abramsbtn,badgebtn,health,abrams,backbtn,playbutton,upgradebtn;

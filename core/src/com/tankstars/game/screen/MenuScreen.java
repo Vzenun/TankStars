@@ -9,8 +9,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.tankstars.game.TankStars;
 import java.awt.Rectangle;
+import java.io.Serializable;
 
-public class MenuScreen implements Screen {
+public class MenuScreen implements Screen, Serializable {
     //private OrthographicCamera cam;
     private TankStars game;
     private Rectangle newgamebtnbnd,resumegamebtnbnd,supportbtnbnd,exitgamebtnbnd;

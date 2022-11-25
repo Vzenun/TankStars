@@ -12,7 +12,9 @@ import com.tankstars.game.TankStars;
 
 import org.w3c.dom.css.Rect;
 
-public class ExitScreen implements Screen {
+import java.io.Serializable;
+
+public class ExitScreen implements Screen, Serializable {
     private TankStars game;
     private Texture jumptomain,backscreen;
     private Rectangle yes,no;
