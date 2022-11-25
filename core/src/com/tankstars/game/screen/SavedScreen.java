@@ -14,7 +14,7 @@ public class SavedScreen implements Screen {
     //private OrthographicCamera cam;
     private TankStars game;
     private Texture menuscreen,svbtn1,svbtn2,svbtn3,supportbtn,exitgamebtn,key,menuscreen2,circlebtn,circlebtn2,svbtn4;
-    private Rectangle mainmenu;
+    private Rectangle mainmenu,game1btn,game2btn,game3btn;
     public SavedScreen(TankStars game) {
 //        cam=new OrthographicCamera();
         this.game = game;
@@ -28,8 +28,10 @@ public class SavedScreen implements Screen {
         circlebtn=new Texture("circle.png");
         circlebtn2=new Texture("circlewhite.png");
         mainmenu=new Rectangle(867,720-100-svbtn4.getHeight(),svbtn4.getWidth(),svbtn4.getHeight());
+        game1btn=new Rectangle(867,720-470-svbtn1.getHeight(),svbtn1.getWidth(),svbtn1.getHeight());
+        game2btn=new Rectangle(867,720-350-svbtn2.getHeight(),svbtn2.getWidth(),svbtn2.getHeight());
+        game3btn=new Rectangle(867,720-220-svbtn3.getHeight(),svbtn3.getWidth(),svbtn3.getHeight());
     }
-
     @Override
     public void show() {
 
@@ -42,6 +44,21 @@ public class SavedScreen implements Screen {
 
             if (mainmenu.contains(postotouch.x, postotouch.y)) {
                 game.setScreen(new MenuScreen(game));
+                dispose();
+            }
+            else
+            if (game1btn.contains(postotouch.x, postotouch.y)) {
+                game.setScreen(new PlayScreen(game));
+                dispose();
+            }
+            else
+            if (game2btn.contains(postotouch.x, postotouch.y)) {
+                game.setScreen(new PlayScreen(game));
+                dispose();
+            }
+            else
+            if (game3btn.contains(postotouch.x, postotouch.y)) {
+                game.setScreen(new PlayScreen(game));
                 dispose();
             }
         }
