@@ -1,6 +1,7 @@
 package com.tankstars.game.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -11,7 +12,7 @@ import com.tankstars.game.TankStars;
 import java.awt.Rectangle;
 import java.io.Serializable;
 
-public class MenuScreen implements Screen, Serializable {
+public class MenuScreen implements Screen,Serializable {
     //private OrthographicCamera cam;
     private TankStars game;
     private Rectangle newgamebtnbnd,resumegamebtnbnd,supportbtnbnd,exitgamebtnbnd;
