@@ -34,8 +34,15 @@ import org.w3c.dom.css.Rect;
 
 import java.io.Serializable;
 
+import jdk.vm.ci.code.Architecture;
+
 
 public class PlayScreen implements Screen, InputProcessor, Serializable {
+    private Body nalli1;
+    private Body nalli2;
+    private Texture tz_muzzle;
+    private float barrelAngle=0.02f;
+    private float barrelAngle2=0.5f;
     boolean movingright=false;
     boolean movingleft=false;
     boolean movingup=false;
@@ -44,6 +51,9 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
     boolean movingleft1=false;
     boolean movingup1=false;
     boolean movingdown1=false;
+    boolean fire=false;
+    boolean fire2=false;
+    //boolean movingdown1=false;
     private TankStars game;
     private Box2DDebugRenderer b2dr;
     private World world;
@@ -54,12 +64,17 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
     private Texture tex;private Texture tex2;private Texture tex3;
     private Body player1,player2,player3,player11,player12,player13;
     private RevoluteJoint rwheel,lwheel;
+    private RevoluteJoint n1,n2;
     private RevoluteJoint rwheel1,lwheel1;
     private Sprite sp;
-    private Sprite sp2;
+    private Sprite sp2;private Texture tbull;
     RevoluteJointDef ref;
     RevoluteJointDef ref1;
+    RevoluteJointDef ref2;
+    private Sprite sp3,sp13,sp03;
     private Array<Body> tmpbody=new Array<Body>();
+
+    private Body Bull,Bull2;
     public PlayScreen(TankStars game){
         this.game=game;
         world=new World(new Vector2(0,-2.8f),true);
@@ -69,22 +84,32 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
         camera.setToOrtho(false,Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
         tankheight=20;
         tankwidth=40;
-
+        tz_muzzle=new Texture("t2_nuzzle.png");
+        sp3=new Sprite(tz_muzzle);
         //tex=new Texture("theme11.png");
         tex2=new Texture("terrain1.png");
         sp2=new Sprite(tex2);
         sp2.setPosition(-10.552f,-5.1f);
         sp2.setSize(640/1/PPM,200/1/PPM);
         sp2.setOrigin(-400,5000);
-        tex3=new Texture("tank2.png");
+        tex3=new Texture("tank2_body.png");
         sp=new Sprite(tex3);
-        player1=createTank(false,-200,50,true,30,30);
+        sp13=new Sprite(new Texture("tank1_body.png"));
+        sp03=new Sprite(new Texture("tank1_nuzzle.png"));
+        player1=createTank(sp,false,-200,50,true,30,30);
         player2=createwheels(false,-200,50,true,20,20);
         player3=createwheels(false,-190,50,true,20,20);
-
-        player11=createTank(false,100,50,true,30,30);
-        player12=createwheels(false,100,50,true,20,20);
+        player11=createTank(sp13,false,90,50,true,30,30);
+        player12=createwheels(false,90,50,true,20,20);
         player13=createwheels(false,90,50,true,20,20);
+        nalli1=createnalli(sp3,false,(int)player1.getPosition().x,(int)player1.getPosition().y,false,30,20);
+        nalli2=createnalli2(sp03,false,(int)player11.getPosition().x,(int)player11.getPosition().y, false,30,20);
+        tbull=new Texture("bullet.png");
+
+        Bull=createbullet(new Sprite(tbull),false,-185,70,false,15,15);
+        Bull2=createbullet(new Sprite(tbull),false,74,80,false,15,15);
+        //Bull.setPosition(player1.getPosition().x,player1.getPosition().y);
+
 
 
         ref = new RevoluteJointDef () ;
@@ -101,6 +126,9 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
         ref.localAnchorA.set(9/PPM,-14/PPM);
         rwheel=(RevoluteJoint) world.createJoint(ref);
 
+        ref.bodyB=nalli1;
+        ref.localAnchorA.set(0/PPM,3/PPM);
+        n1=(RevoluteJoint)world.createJoint(ref);
 
         ref1 = new RevoluteJointDef () ;
         ref1.enableMotor=true;
@@ -109,12 +137,17 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
         ref1.bodyA=player11;
         ref1.bodyB=player12;
         ref1.collideConnected=false;
-        ref1.localAnchorA.set(-7/PPM,-14/PPM);
+        ref1.localAnchorA.set(9/PPM,-15/PPM);
         lwheel1=(RevoluteJoint) world.createJoint(ref1);
 
         ref1.bodyB=player13;
-        ref1.localAnchorA.set(7/PPM,-14/PPM);
+        ref1.localAnchorA.set(-9/PPM,-15/PPM);
         rwheel1=(RevoluteJoint) world.createJoint(ref1);
+
+        ref1.bodyB=nalli2;
+        ref1.localAnchorA.set(-8/PPM,12/PPM);
+        n2=(RevoluteJoint)world.createJoint(ref1);
+
         Gdx.input.setInputProcessor(this);
     }
     @Override
@@ -167,6 +200,36 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
     }
     public void inputUpdate(float delta)
     {
+        if(movingup==true)
+        {
+
+            if(barrelAngle<3.14) {
+                barrelAngle+=0.05f;
+                nalli1.setTransform(player1.getPosition().x, player1.getPosition().y, barrelAngle);
+            }
+        }
+        if(movingdown==true)
+        {
+            if(barrelAngle>0) {
+                barrelAngle-=0.05f;
+                nalli1.setTransform(player1.getPosition().x,player1.getPosition().y, barrelAngle);
+            }
+        }
+        if(movingup1==true)
+        {
+
+            if(barrelAngle2<=3.14) {
+                barrelAngle2+=0.05f;
+                nalli2.setTransform(player11.getPosition().x, player11.getPosition().y, barrelAngle2);
+            }
+        }
+        if(movingdown1==true)
+        {
+            if(barrelAngle2>=0) {
+                barrelAngle2-=0.05f;
+                nalli2.setTransform(player11.getPosition().x,player11.getPosition().y, barrelAngle2);
+            }
+        }
         if(movingleft==true) {
             player2.setLinearVelocity(-0.46f,player2.getLinearVelocity().y);
             player3.setLinearVelocity(-0.46f,player3.getLinearVelocity().y);
@@ -185,14 +248,29 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
             player12.setLinearVelocity(0.46f,player12.getLinearVelocity().y);
             player13.setLinearVelocity(0.46f,player13.getLinearVelocity().y);
         }
+        if(fire==true)
+        {
+            //Bull=createbullet(new Sprite(tbull),false,-180,80,false,15,15);
+            Bull.applyLinearImpulse(new Vector2(0.2f*MathUtils.cos(barrelAngle),0.2f*MathUtils.sin(barrelAngle)),new Vector2(Bull.getPosition().x,Bull.getPosition().y),true);
+            //player13.setLinearVelocity(0.46f,player13.getLinearVelocity().y);
+        }
+        if(fire2==true)
+        {
+            //Bull2=createbullet(new Sprite(tbull),false,74,80,false,15,15);
+            Bull2.applyLinearImpulse(new Vector2(0.2f*MathUtils.cos(barrelAngle2),0.2f*MathUtils.sin(barrelAngle2)),new Vector2(Bull2.getPosition().x,Bull2.getPosition().y),true);
+            //player13.setLinearVelocity(0.46f,player13.getLinearVelocity().y);
+        }
         if(movingright1!=true && movingright!=true && movingleft!=true && movingleft1!=true){
             player2.setLinearVelocity(0,player2.getLinearVelocity().y);
+            player1.setLinearVelocity(0,player1.getLinearVelocity().y);
             player3.setLinearVelocity(0,player3.getLinearVelocity().y);
             player12.setLinearVelocity(0,player12.getLinearVelocity().y);
             player13.setLinearVelocity(0,player13.getLinearVelocity().y);
+            player11.setLinearVelocity(0,player11.getLinearVelocity().y);
             //player2.applyForceToCenter(new Vector2(0,2.8f),true);
             //player3.applyForceToCenter(new Vector2(0,2.8f),true);
         }
+
     }
     public void cameraUpdate(float delta)
     {
@@ -239,6 +317,12 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
         if(keycode==Input.Keys.S){
             movingdown1=true;
         }
+        if(keycode==Input.Keys.SPACE){
+            fire=true;
+        }
+        if(keycode==Input.Keys.ENTER){
+            fire2=true;
+        }
         return false;
     }
 
@@ -267,6 +351,12 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
         }
         if(keycode==Input.Keys.S){
             movingdown1=false;
+        }
+        if(keycode==Input.Keys.SPACE){
+            fire=false;
+        }
+        if(keycode==Input.Keys.ENTER){
+            fire2=false;
         }
         return false;
     }
@@ -300,6 +390,7 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
     public boolean scrolled(float amountX, float amountY) {
         return false;
     }
+
     public Body createGround()
     {
         Body body;
@@ -317,7 +408,8 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
         body.createFixture(fix);
         return body;
     }
-    public Body createTank(boolean isStatic,int x,int y,boolean isRotatable,int tankwidth,int tankheight){
+
+    public Body createTank(Sprite sp,boolean isStatic,int x,int y,boolean isRotatable,int tankwidth,int tankheight){
         Body tbody;
         BodyDef def=new BodyDef();
         if(!isStatic){
@@ -334,7 +426,7 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
             def.fixedRotation=false;
         }
         PolygonShape shape=new PolygonShape();
-        shape.setAsBox(tankwidth/4/PPM,tankheight/6/PPM);
+        shape.setAsBox(tankwidth/4/PPM-4/1/PPM,tankheight/6/PPM);
 
         FixtureDef fix=new FixtureDef();
         fix.shape=shape;
@@ -347,7 +439,7 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
         tbody.createFixture(fix);
 
         CircleShape shape1=new CircleShape();
-        shape1.setRadius(.2f);
+        shape1.setRadius(.1f);
 
         FixtureDef fix1=new FixtureDef();
         fix1.shape=shape1;
@@ -356,7 +448,7 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
         fix1.density=0f;
 
         tbody.createFixture(fix1);
-        sp.setSize(tankwidth/1/PPM+20/1/PPM,tankheight/1/PPM+10/1/PPM);
+        sp.setSize(tankwidth/1/PPM+10/1/PPM,tankheight/1/PPM+12/1/PPM);
         sp.setOrigin(sp.getWidth()/2,sp.getHeight()/2);
         tbody.setUserData(sp);
 
@@ -394,6 +486,118 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
         tbody.createFixture(fix1);
 
         shape1.dispose();
+        return tbody;
+    }
+    public Body createnalli(Sprite sp3,boolean isStatic,int x,int y,boolean isRotatable,int tankwidth,int tankheight)
+    {
+        Body tbody;
+        BodyDef def=new BodyDef();
+        if(!isStatic){
+            def.type=BodyDef.BodyType.DynamicBody;
+        }
+        else{
+            def.type=BodyDef.BodyType.StaticBody;
+        }
+        def.position.set(x/PPM,y/PPM);
+        if(!isRotatable){
+            def.fixedRotation=true;
+        }
+        else{
+            def.fixedRotation=false;
+        }
+        PolygonShape shape=new PolygonShape();
+        shape.setAsBox(tankwidth/4/PPM,tankheight/6/PPM);
+
+        FixtureDef fix1=new FixtureDef();
+        fix1.shape=shape;
+        fix1.friction=10.25f;
+        fix1.restitution=.02f;
+        fix1.density=1f;
+
+        tbody=world.createBody(def);
+
+        sp3.setSize((float)1.5*tankwidth/1/PPM,4*tankheight/1/PPM);
+        sp3.setOrigin(sp3.getWidth()/2,sp3.getHeight()/2);
+        tbody.setUserData(sp3);
+
+        tbody.createFixture(fix1);
+
+        shape.dispose();
+        return tbody;
+    }
+
+    public Body createnalli2(Sprite sp3,boolean isStatic,int x,int y,boolean isRotatable,int tankwidth,int tankheight)
+    {
+        Body tbody;
+        BodyDef def=new BodyDef();
+        if(!isStatic){
+            def.type=BodyDef.BodyType.DynamicBody;
+        }
+        else{
+            def.type=BodyDef.BodyType.StaticBody;
+        }
+        def.position.set(x/PPM,y/PPM);
+        if(!isRotatable){
+            def.fixedRotation=true;
+        }
+        else{
+            def.fixedRotation=false;
+        }
+        PolygonShape shape=new PolygonShape();
+        shape.setAsBox(tankwidth/4/PPM,tankheight/6/PPM);
+
+        FixtureDef fix1=new FixtureDef();
+        fix1.shape=shape;
+        fix1.friction=10.25f;
+        fix1.restitution=.02f;
+        fix1.density=1f;
+
+        tbody=world.createBody(def);
+
+        sp3.setSize((float)1.25f*tankwidth/1/PPM,(float)1.25f*tankheight/1/PPM);
+        sp3.setOrigin(sp3.getWidth()/2,sp3.getHeight()/2);
+        tbody.setUserData(sp3);
+
+        tbody.createFixture(fix1);
+
+        shape.dispose();
+        return tbody;
+    }
+    public Body createbullet(Sprite sp3,boolean isStatic,int x,int y,boolean isRotatable,int tankwidth,int tankheight)
+    {
+        Body tbody;
+        BodyDef def=new BodyDef();
+        if(!isStatic){
+            def.type=BodyDef.BodyType.DynamicBody;
+        }
+        else{
+            def.type=BodyDef.BodyType.StaticBody;
+        }
+        def.position.set(x/PPM,y/PPM);
+        if(!isRotatable){
+            def.fixedRotation=true;
+        }
+        else{
+            def.fixedRotation=false;
+        }
+        PolygonShape shape=new PolygonShape();
+        shape.setAsBox(tankwidth/4/PPM,tankheight/6/PPM);
+
+        FixtureDef fix1=new FixtureDef();
+        fix1.shape=shape;
+        fix1.friction=10.25f;
+        fix1.restitution=.02f;
+        fix1.density=4f;
+
+        tbody=world.createBody(def);
+
+        sp3.setSize((float)1.25f*tankwidth/1/PPM,(float)1.25f*tankheight/2/PPM);
+        sp3.setOrigin(sp3.getWidth()/2,sp3.getHeight()/2);
+        tbody.setUserData(sp3);
+
+        tbody.createFixture(fix1);
+
+        shape.dispose();
         return tbody;
     }
 }
