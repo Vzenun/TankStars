@@ -1,6 +1,5 @@
 package com.tankstars.game.screen;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -9,11 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
@@ -25,19 +20,16 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.tankstars.game.TankStars;
-import static com.tankstars.game.screen.Constants.PPM;
+import com.tankstars.game.Vidur_DuaContactListner;
 
-import org.w3c.dom.Text;
-import org.w3c.dom.css.Rect;
+import static com.tankstars.game.screen.Constants.PPM;
 
 import java.io.Serializable;
 
-import jdk.vm.ci.code.Architecture;
-
 
 public class PlayScreen implements Screen, InputProcessor, Serializable {
+
     private Body nalli1;
     private Body nalli2;
     private Texture tz_muzzle;
@@ -76,6 +68,7 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
 
     private Body Bull,Bull2;
     public PlayScreen(TankStars game){
+
         this.game=game;
         world=new World(new Vector2(0,-2.8f),true);
         b2dr=new Box2DDebugRenderer();
@@ -108,6 +101,7 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
 
         Bull=createbullet(new Sprite(tbull),false,-185,70,false,15,15);
         Bull2=createbullet(new Sprite(tbull),false,74,80,false,15,15);
+        this.world.setContactListener(new Vidur_DuaContactListner());
         //Bull.setPosition(player1.getPosition().x,player1.getPosition().y);
 
 
@@ -164,8 +158,8 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
         world.getBodies(tmpbody);
-        //game.batch.draw(tex,0,0);
-        //game.batch.draw(tex3,player1.getPosition().x*PPM,player1.getPosition().y*PPM);
+        //game.batch.draw(tex,player1.getPosition().x,player1.getPosition().y);
+        //game.batch.draw(tex,player1.getPosition().x*PPM,player1.getPosition().y*PPM);
         for(Body body : tmpbody){
             if(body.getUserData()!=null && body.getUserData() instanceof Sprite){
                 Sprite sprite=(Sprite) body.getUserData();
@@ -198,11 +192,11 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
         inputUpdate(delta);
         cameraUpdate(delta);
     }
+
     public void inputUpdate(float delta)
     {
         if(movingup==true)
         {
-
             if(barrelAngle<3.14) {
                 barrelAngle+=0.05f;
                 nalli1.setTransform(player1.getPosition().x, player1.getPosition().y, barrelAngle);
