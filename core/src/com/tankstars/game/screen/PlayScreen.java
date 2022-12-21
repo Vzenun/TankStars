@@ -25,26 +25,32 @@ import com.tankstars.game.Vidur_DuaContactListner;
 
 import static com.tankstars.game.screen.Constants.PPM;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Iterator;
 
 
 public class PlayScreen implements Screen, InputProcessor, Serializable {
 
-    private Body nalli1;
+    private Body nalli1;private Texture bgh;private boolean escape=false;
     private Body nalli2;
     private Texture tz_muzzle;
     private float barrelAngle=0.02f;
     private float barrelAngle2=0.5f;
-    boolean movingright=false;
-    boolean movingleft=false;
-    boolean movingup=false;
-    boolean movingdown=false;
-    boolean movingright1=false;
-    boolean movingleft1=false;
-    boolean movingup1=false;
-    boolean movingdown1=false;
-    boolean fire=false;
-    boolean fire2=false;
+    private boolean movingright=false;
+    private boolean movingleft=false;
+    private boolean movingup=false;
+    private boolean movingdown=false;
+    private boolean movingright1=false;
+    private boolean movingleft1=false;
+    private boolean movingup1=false;
+    private boolean movingdown1=false;
+    private boolean fire=false;
+    private boolean fire2=false;
     //boolean movingdown1=false;
     private TankStars game;
     private Box2DDebugRenderer b2dr;
@@ -70,10 +76,12 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
     public PlayScreen(TankStars game){
 
         this.game=game;
+        bgh=new Texture("theme11.png");
         world=new World(new Vector2(0,-2.8f),true);
         b2dr=new Box2DDebugRenderer();
         camera=new OrthographicCamera();
         Body Ground=createGround();
+        Iterator iter = tmpbody.iterator();
         camera.setToOrtho(false,Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
         tankheight=20;
         tankwidth=40;
@@ -148,6 +156,55 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
     public void show() {
 
     }
+    public void serialize()
+    {
+        try
+        {
+
+            FileOutputStream file = new FileOutputStream("chaitanyavidur.txt");
+            ObjectOutputStream out = new ObjectOutputStream(file);
+
+            PlayScreen p=new PlayScreen(game);
+            out.writeObject(p);
+
+            out.close();
+            file.close();
+
+            System.out.println("Object has been serialized");
+
+        }
+
+        catch(IOException ex)
+        {
+            System.out.println("IOException is caught");
+        }
+    }
+    public void deserialize()
+    {
+        try
+        {
+            FileInputStream file = new FileInputStream("chaitanyavidur.txt");
+            ObjectInputStream in = new ObjectInputStream(file);
+
+            PlayScreen object1 = (PlayScreen)in.readObject();
+
+            in.close();
+            file.close();
+
+            System.out.println("Object has been deserialized ");
+
+        }
+
+        catch(IOException ex)
+        {
+            System.out.println("IOException is caught");
+        }
+
+        catch(ClassNotFoundException ex)
+        {
+            System.out.println("ClassNotFoundException is caught");
+        }
+    }
 
     @Override
     public void render(float delta) {
@@ -157,6 +214,7 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
         b2dr.render(world, camera.combined.scl(PPM));
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
+        game.batch.draw(bgh,(0-camera.viewportWidth)/1,0-camera.viewportWidth/1);
         world.getBodies(tmpbody);
         //game.batch.draw(tex,player1.getPosition().x,player1.getPosition().y);
         //game.batch.draw(tex,player1.getPosition().x*PPM,player1.getPosition().y*PPM);
@@ -317,6 +375,10 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
         if(keycode==Input.Keys.ENTER){
             fire2=true;
         }
+        if(keycode==Input.Keys.ESCAPE)
+        {
+            escape=true;
+        }
         return false;
     }
 
@@ -349,8 +411,8 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
         if(keycode==Input.Keys.SPACE){
             fire=false;
         }
-        if(keycode==Input.Keys.ENTER){
-            fire2=false;
+        if(keycode==Input.Keys.ENTER) {
+            fire2 = false;
         }
         return false;
     }
@@ -594,4 +656,5 @@ public class PlayScreen implements Screen, InputProcessor, Serializable {
         shape.dispose();
         return tbody;
     }
+
 }
